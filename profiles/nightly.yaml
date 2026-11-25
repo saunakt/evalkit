@@ -1,0 +1,20 @@
+# Nightly: every suite that runs offline, three repeats.
+run: { repeats: 3 }
+suites:
+  quality: { enabled: true }
+  prompt: { enabled: true }
+  robustness: { enabled: true }
+  conversation: { enabled: true }
+  rag: { enabled: true }
+  agent: { enabled: true }
+  coding_agent: { enabled: true }
+  skills: { enabled: true }
+  security: { enabled: true }
+  responsible_ai: { enabled: true }
+  guardrails: { enabled: true }
+  compliance: { enabled: true }
+  performance: { enabled: true }
+  multimodal: { enabled: true }
+  finetune: { enabled: true }
+  multilingual: { enabled: true }
+  classic: { enabled: true }

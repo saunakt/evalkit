@@ -1,0 +1,23 @@
+# Release: held-out splits, more repeats, evidence pack, stricter calibration.
+run: { repeats: 5 }
+splits: [dev, heldout]
+reports: { evidence_pack: true }
+calibration: { allow_uncalibrated: false }
+suites:
+  quality: { enabled: true }
+  prompt: { enabled: true }
+  robustness: { enabled: true }
+  conversation: { enabled: true }
+  rag: { enabled: true }
+  agent: { enabled: true, params: { k: 5 } }
+  coding_agent: { enabled: true }
+  skills: { enabled: true }
+  security: { enabled: true }
+  responsible_ai: { enabled: true }
+  guardrails: { enabled: true }
+  compliance: { enabled: true }
+  performance: { enabled: true }
+  multimodal: { enabled: true }
+  finetune: { enabled: true }
+  multilingual: { enabled: true }
+  classic: { enabled: true }

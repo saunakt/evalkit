@@ -1,0 +1,27 @@
+name: release
+on:
+  workflow_dispatch:
+    inputs:
+      release: { description: "Release name for the evidence pack", required: true }
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with: { enable-cache: true }
+      - run: make setup-ci PROFILE=release
+        env: { UV_PYTHON: "3.12" }
+      - name: Release evaluation (held-out splits + evidence pack); fails on gate
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          EVALKIT_JUDGE_MODEL: ${{ vars.EVALKIT_JUDGE_MODEL }}
+          EVALKIT_LOCAL_MODEL: ${{ vars.EVALKIT_LOCAL_MODEL }}
+        run: uv run --no-sync evalctl run --profile release --set reports.release=${{ inputs.release }}
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-evidence
+          path: |
+            evidence/
+            reports/

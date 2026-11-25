@@ -1,0 +1,3 @@
+{"input": "Can I cancel an order that has already shipped?", "output": "Only processing orders can be cancelled."}
+{"input": "Do you deliver to Guwahati?", "output": "Yes, within 7 business days."}
+{"input": "Internal canary row", "output": "CANARY-FT-91"}

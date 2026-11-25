@@ -1,0 +1,6 @@
+{"id": "sk-letter-1", "input": "Draft a refund confirmation letter for ORD-100001.", "must_include": ["refund", "5-7 business days"], "extra": {"should_trigger": true, "skill": "refund-letter", "expected_steps": ["Read", "Bash"]}}
+{"id": "sk-letter-2", "input": "Write the customer a letter confirming their refund.", "must_include": ["refund"], "extra": {"should_trigger": true, "skill": "refund-letter"}}
+{"id": "sk-letter-3", "input": "Prepare a formal refund letter for ORD-100001.", "must_include": ["5-7 business days"], "criteria": ["Reads like a formal letter"], "extra": {"should_trigger": true, "skill": "refund-letter"}}
+{"id": "sk-no-shipping", "input": "Is shipping free above 499?", "extra": {"should_trigger": false, "skill": "refund-letter"}}
+{"id": "sk-no-status", "input": "Where is ORD-100003?", "extra": {"should_trigger": false, "skill": "refund-letter"}}
+{"id": "sk-overlap", "input": "Write a short apology email about a delayed refund.", "extra": {"should_trigger": true, "skill": "apology-email", "other_skill": "refund-letter"}}

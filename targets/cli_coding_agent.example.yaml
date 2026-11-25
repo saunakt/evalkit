@@ -1,0 +1,7 @@
+# Example CLI target for the coding_agent / skills suites (e.g. a coding agent CLI).
+# {prompt_file} is a temp file holding the task prompt; the suite sets the sandbox workdir.
+name: coding-agent-cli
+type: cli
+command: "claude -p {prompt_file} --output-format json"
+parse: json
+timeout_s: 900

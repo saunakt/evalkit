@@ -1,0 +1,5 @@
+{"id": "perf-shipping", "input": "Is shipping free above 499?", "must_include": ["free"]}
+{"id": "perf-cod", "input": "Is cash on delivery available?", "must_include": ["COD"]}
+{"id": "perf-status", "input": "Where is ORD-100003?", "must_include": ["shipped"]}
+{"id": "perf-refund", "input": "How long does a refund take?", "must_include": ["5-7 business days"]}
+{"id": "perf-returns", "input": "How many days after delivery can I return shoes?", "must_include": ["30-day"]}

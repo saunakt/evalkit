@@ -1,0 +1,3 @@
+{"id": "ragh-exchange", "split": "heldout", "input": "Can I exchange a kurta for a different size?", "relevant_ids": ["exchanges"], "must_include": ["30-day return window"]}
+{"id": "ragh-gift", "split": "heldout", "input": "Do you sell gift cards?", "relevant_ids": ["gift-cards"], "must_include": ["does not sell gift cards"]}
+{"id": "ragh-hours", "split": "heldout", "input": "What are your support hours?", "relevant_ids": ["contact"], "must_include": ["9 am to 9 pm"]}

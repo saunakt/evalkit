@@ -1,0 +1,16 @@
+.venv/
+.evalkit/
+results/
+reports/
+labelstudio/
+datasets/drafts/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+node_modules/
+.env
+.env.*
+.deepeval/
+.claude/settings.local.json

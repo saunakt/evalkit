@@ -1,0 +1,26 @@
+name: nightly
+on:
+  schedule: [{ cron: "30 20 * * *" }]   # 02:00 IST
+  workflow_dispatch: {}
+jobs:
+  nightly:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with: { enable-cache: true }
+      - run: make setup-ci PROFILE=nightly
+        env: { UV_PYTHON: "3.12" }
+      - run: uv run --no-sync evalctl run --profile nightly --provider fake --set calibration.allow_uncalibrated=true
+      - name: Push to Langfuse (if configured)
+        if: always()
+        env:
+          LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+          LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+          LANGFUSE_HOST: ${{ vars.LANGFUSE_HOST }}
+        run: |
+          if [ -z "$LANGFUSE_PUBLIC_KEY" ]; then echo "Langfuse not configured; skipping"; exit 0; fi
+          uv sync --inexact --no-install-project --extra observe && uv run --no-sync evalctl push last
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: { name: nightly-reports, path: reports/ }

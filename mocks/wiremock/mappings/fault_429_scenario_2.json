@@ -1,0 +1,14 @@
+{
+  "scenarioName": "rate-limit",
+  "requiredScenarioState": "second",
+  "request": {
+    "method": "GET",
+    "url": "/orders/ORD-900004"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "status": "processing"
+    }
+  }
+}

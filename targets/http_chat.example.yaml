@@ -1,0 +1,20 @@
+# Example HTTP target. Copy, set the URL and the response mapping for your API.
+name: my-chat-api
+type: http
+url: https://chat.example.internal/v1/answer
+method: POST
+headers:
+  Authorization: "Bearer ${CHAT_API_TOKEN}"
+body: |
+  {"question": {{ input | tojson }}, "history": {{ messages | tojson }}, "session": {{ ctx.session_id | tojson }}}
+response:
+  text: data.answer
+  tool_calls: data.trace.tools
+  retrieved: data.trace.chunks
+  tokens_in: usage.input_tokens
+  tokens_out: usage.output_tokens
+stream: sse                     # optional: enables TTFT measurement
+reset_url: https://chat.example.internal/v1/test/reset
+state_url: https://chat.example.internal/v1/test/state
+timeout_s: 60
+retries: 3

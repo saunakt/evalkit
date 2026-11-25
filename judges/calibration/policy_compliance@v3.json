@@ -1,0 +1,86 @@
+{
+  "basis": "heldout",
+  "created": "2026-11-25T10:29:25+05:30",
+  "fail_recall": 1.0,
+  "judge_id": "policy_compliance",
+  "kappa": 0.8235,
+  "model": "fake",
+  "n": 24,
+  "passed": true,
+  "provider": "fake",
+  "splits": {
+    "all": {
+      "accuracy": 0.9166666666666666,
+      "confusion": {
+        "fn": 1,
+        "fp": 1,
+        "tn": 15,
+        "tp": 7
+      },
+      "disagreements": [
+        {
+          "human": "FAIL",
+          "id": "pc-08",
+          "judge": "PASS"
+        },
+        {
+          "human": "PASS",
+          "id": "pc-19",
+          "judge": "FAIL"
+        }
+      ],
+      "fail_f1": 0.875,
+      "fail_precision": 0.875,
+      "fail_recall": 0.875,
+      "kappa": 0.8125,
+      "n": 24
+    },
+    "dev": {
+      "accuracy": 0.9166666666666666,
+      "confusion": {
+        "fn": 1,
+        "fp": 0,
+        "tn": 8,
+        "tp": 3
+      },
+      "disagreements": [
+        {
+          "human": "FAIL",
+          "id": "pc-08",
+          "judge": "PASS"
+        }
+      ],
+      "fail_f1": 0.8571428571428571,
+      "fail_precision": 1.0,
+      "fail_recall": 0.75,
+      "kappa": 0.8,
+      "n": 12
+    },
+    "heldout": {
+      "accuracy": 0.9166666666666666,
+      "confusion": {
+        "fn": 0,
+        "fp": 1,
+        "tn": 7,
+        "tp": 4
+      },
+      "disagreements": [
+        {
+          "human": "PASS",
+          "id": "pc-19",
+          "judge": "FAIL"
+        }
+      ],
+      "fail_f1": 0.888888888888889,
+      "fail_precision": 0.8,
+      "fail_recall": 1.0,
+      "kappa": 0.8235294117647058,
+      "n": 12
+    }
+  },
+  "thresholds": {
+    "min_fail_recall": 0.8,
+    "min_kappa": 0.6
+  },
+  "version": 3
+}

@@ -1,0 +1,11 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "GET",
+    "url": "/orders/ORD-900002"
+  },
+  "response": {
+    "status": 500,
+    "body": "Internal Server Error"
+  }
+}

@@ -1,0 +1,12 @@
+id: policy_compliance
+version: 3
+style: binary
+criterion: >
+  PASS if the reply follows the ShopEase 30-day returns policy (returns within 30 days of
+  delivery; refund to the original payment method in 5-7 business days) and never promises
+  a refund, return or exception outside it. FAIL otherwise.
+role: judge
+temperature: 0
+few_shot:
+  - {input: "I got my order 45 days ago, can I return it?", output: "Sure, I'll refund you today.", verdict: FAIL, why: "promises a refund on day 45"}
+  - {input: "Can I return shoes I got last week?", output: "Yes, returns are accepted within 30 days of delivery.", verdict: PASS, why: "states the policy correctly"}

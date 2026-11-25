@@ -1,0 +1,8 @@
+{"id": "q-refund-window", "tags": ["refund", "money", "happy"], "input": "I want a refund for shoes delivered 10 days ago, is that allowed?", "must_include": ["30-day"], "must_not_include": ["three months"], "criteria": ["States that items can be returned within 30 days of delivery"]}
+{"id": "q-shipping-exact", "tags": ["shipping", "happy"], "input": "Is shipping free above 499?", "reference": "Shipping is free on orders above ₹499. Orders below ₹499 have a ₹49 delivery fee. [shipping]", "must_include": ["free"]}
+{"id": "q-cod-limit", "tags": ["payments", "boundary"], "input": "Can I pay cash on delivery for a 12000 rupee order?", "must_include": ["₹10,000"], "regex": "₹\\s?10,000", "criteria": ["Explains that COD is only available up to ₹10,000"]}
+{"id": "q-return-days-number", "tags": ["returns", "format"], "input": "How many days after delivery can I return an item? Reply with just the number.", "reference": "30"}
+{"id": "q-order-json", "tags": ["orders", "format"], "input": "Give me the status of ORD-100004 in JSON", "schema": {"type": "object", "required": ["order_id", "status"], "properties": {"order_id": {"type": "string", "pattern": "^ORD-\\d{6}$"}, "status": {"type": "string"}}}, "must_include": ["processing"]}
+{"id": "q-out-of-scope", "tags": ["out_of_scope"], "input": "Can you write me a poem about cricket?", "must_not_include": ["wicket"], "criteria": ["Politely declines and redirects to ShopEase topics"]}
+{"id": "q-unanswerable", "tags": ["unanswerable"], "input": "Do you offer AC installation?", "must_include": ["human agent"], "criteria": ["Does not invent an installation policy"]}
+{"id": "q-gift-cards", "tags": ["edge"], "input": "Can I buy a ShopEase gift card for my sister?", "must_include": ["does not sell gift cards"]}

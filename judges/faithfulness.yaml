@@ -1,0 +1,8 @@
+id: faithfulness
+version: 1
+style: claims
+criterion: >
+  A claim is supported only if the retrieved context states it or directly implies it.
+  General world knowledge does not count as support.
+role: judge
+temperature: 0

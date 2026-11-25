@@ -1,0 +1,5 @@
+# Model migration: compare models.sut (current) with models.candidate across suites.
+run: { repeats: 1 }
+suites:
+  quality: { enabled: false }
+  migration: { enabled: true }

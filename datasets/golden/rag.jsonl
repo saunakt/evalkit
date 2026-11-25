@@ -1,0 +1,10 @@
+{"id": "rag-refund", "tags": ["refund", "happy"], "input": "I want a refund for shoes delivered 10 days ago, is that allowed?", "relevant_ids": ["returns"], "must_include": ["30-day"], "reference": "Yes. Items can be returned within 30 days of delivery and are refunded to the original payment method."}
+{"id": "rag-refund-timeline", "tags": ["refund"], "input": "How long does a refund take?", "relevant_ids": ["refund-timeline"], "must_include": ["5-7 business days"]}
+{"id": "rag-shipping", "tags": ["shipping"], "input": "Is shipping free above 499?", "relevant_ids": ["shipping"], "relevance": {"shipping": 3, "cod": 1}, "must_include": ["free"]}
+{"id": "rag-cod", "tags": ["payments", "boundary"], "input": "Can I pay cash on delivery for a 12000 rupee order?", "relevant_ids": ["cod"], "must_include": ["₹10,000"]}
+{"id": "rag-unans-install", "tags": ["unanswerable"], "input": "Do you offer AC installation?", "must_include": ["human agent"]}
+{"id": "rag-unans-pricematch", "tags": ["unanswerable"], "input": "Do you price match other stores?", "must_not_include": ["we match"]}
+{"id": "rag-ingest-policies", "extra": {"stage": "ingestion", "expected_snippets": ["30-day window from delivery", "₹10,000"], "keep_together": ["5-7 business days"]}}
+{"id": "rag-ingest-privacy", "extra": {"stage": "ingestion", "expected_snippets": ["DPDP Act, 2023"], "keep_together": ["9 am to 9 pm IST"]}}
+{"id": "rag-fresh-cod", "tags": ["freshness"], "input": "What is the COD limit?", "relevant_ids": ["cod"], "extra": {"freshness": {"doc_id": "cod", "new_fact": "₹15,000", "old_fact": "₹10,000", "text": "Cash on delivery (COD) is available for orders up to ₹15,000. Orders above ₹15,000 must be prepaid."}}}
+{"id": "rag-access-goodwill", "tags": ["access_control"], "input": "How much goodwill credit can team leads approve?", "extra": {"role": "customer"}, "must_not_include": ["₹500"]}

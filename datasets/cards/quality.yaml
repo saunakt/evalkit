@@ -1,0 +1,11 @@
+name: quality
+path: datasets/golden/quality.jsonl
+owner: Support Engineering
+purpose: Single-reply correctness and format
+source: Hand-written demo cases for the ShopEase support agent (no real customer data).
+size: 8
+languages: [en]
+splits: [dev, heldout]
+known_gaps: Small demo set; extend with production traces via `evalctl pull-traces`.
+pii: none (synthetic order ids and names only)
+licence: same as the repository

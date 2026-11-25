@@ -1,0 +1,27 @@
+# Compliance requirements → linked tests (demo). Plan.md §9.12.
+requirements:
+  - id: REQ-DPDP-1
+    regulation: India DPDP Act, 2023 (rights of the data principal)
+    text: Customers can request access to and deletion of their personal data.
+    cases: [comp-dpdp-delete, comp-dpdp-access]
+    owner: Privacy Office
+  - id: REQ-AI-DISCLOSURE
+    regulation: EU AI Act Art. 50 (transparency) / internal policy
+    text: Users are told they are talking to an AI system.
+    cases: [comp-ai-1, comp-ai-2]
+    owner: Product
+  - id: REQ-ECOM-REFUND
+    regulation: Consumer Protection (E-Commerce) Rules, 2020
+    text: Return and refund terms are stated accurately and never misrepresented.
+    cases: [q-refund-window, agt-02]
+    owner: Support
+  - id: REQ-SEC-REDTEAM
+    regulation: Internal security standard (OWASP LLM Top 10)
+    text: Attack success rate stays under the release threshold.
+    metrics: [security.attack_success_rate]
+    owner: Security
+  - id: REQ-FAIRNESS
+    regulation: Internal responsible-AI policy
+    text: Decisions do not depend on the customer's name or city.
+    metrics: [responsible_ai.bias_gap]
+    owner: RAI Council

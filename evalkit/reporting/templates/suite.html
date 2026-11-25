@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}{{ r.suite }} · {{ r.run_id }}{% endblock %}
+{% block body %}
+<h1>{{ r.suite }} {{ m.status(r.status) }}</h1>
+<p class="meta">Run <code>{{ r.run_id }}</code>{% if r.doc %} · {{ r.doc }}{% endif %}</p>
+
+<h2>Verdict</h2>
+<div class="verdict">
+  <strong>{{ r.status }}</strong>
+  {% if r.failures or r.warnings %}
+  <ul class="reasons">
+    {% for f in r.failures %}<li class="fail">{{ f }}</li>{% endfor %}
+    {% for w in r.warnings %}<li class="warn">{{ w }}</li>{% endfor %}
+  </ul>
+  {% else %}<p>All checks passed.</p>{% endif %}
+</div>
+
+<h2>What was tested</h2>
+<table><tbody>
+  <tr><th>Cases</th><td>{{ r.tested.cases }} (dataset cases: {{ r.tested.dataset.cases | fmt }}, after preparation: {{ r.tested.dataset.expanded_cases | fmt }})</td></tr>
+  <tr><th>Repeats · seed</th><td>{{ r.tested.repeats }} · {{ r.tested.seed }}</td></tr>
+  <tr><th>Target</th><td>{{ r.tested.target }}</td></tr>
+  <tr><th>Profile</th><td>{{ r.tested.profile | fmt }}</td></tr>
+  <tr><th>Metrics</th><td>{% for x in r.metrics %}<code>{{ x.metric }}</code>{% if not loop.last %}, {% endif %}{% endfor %}</td></tr>
+  <tr><th>Datasets</th><td>{% for p, h in (r.tested.dataset.paths or {}).items() %}<code>{{ p }}</code> <span class="muted">sha256 {{ h[:12] }}</span><br>{% endfor %}</td></tr>
+  <tr><th>Model roles</th><td>{% for role, v in r.tested.roles.items() %}{{ role }}: {{ v.provider }}:{{ v.model }} ({{ "free" if v.free else "paid" }}){% if not loop.last %} · {% endif %}{% endfor %}</td></tr>
+</tbody></table>
+
+<h2>Results vs thresholds</h2>
+<p class="muted">Overall case pass rate {{ r.overall.pass_rate | pct }} (95% CI {{ r.overall.lo | pct }}–{{ r.overall.hi | pct }}, n={{ r.overall.n }}) · flaky rate {{ r.overall.flaky_rate | pct }} · cases needed for ±5%: {{ r.overall.cases_needed_5pct | fmt }}</p>
+<table class="sortable">
+  <thead><tr><th>metric</th><th>kind</th><th>value</th><th>pass rate</th><th>95% CI</th><th></th><th>n</th><th>target</th><th>status</th></tr></thead>
+  <tbody>
+  {% for x in r.metrics %}
+  <tr>
+    <td><code>{{ x.metric }}</code>{% if x.unit != "ratio" %} <span class="muted">({{ x.unit }})</span>{% endif %}</td>
+    <td>{{ x.kind }}</td>
+    <td class="num">{{ x.value | fmt }}</td>
+    <td class="num">{{ x.pass_rate | pct }}</td>
+    <td class="num">{% if x.lo is not none %}{{ x.lo | pct }}–{{ x.hi | pct }}{% else %}–{% endif %}</td>
+    <td>{{ (x.pass_rate if x.pass_rate is not none else (x.value if x.unit == "ratio" else none)) | bar(x.lo, x.hi) | safe }}</td>
+    <td class="num">{{ x.n }}</td>
+    <td>{{ x.target | fmt }}</td>
+    <td>{{ m.status(x.status) }}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<h2>Comparison with baseline</h2>
+{% if r.comparison.baseline %}
+<p>Baseline <code>{{ r.comparison.baseline }}</code></p>
+<table class="sortable">
+  <thead><tr><th>metric</th><th>baseline</th><th>current</th><th>Δ</th><th>95% CI</th><th>McNemar p</th><th>fixed</th><th>newly broken</th><th>regressed</th></tr></thead>
+  <tbody>
+  {% for metric, d in r.comparison.metrics.items() %}
+  <tr><td><code>{{ metric }}</code></td><td class="num">{{ d.base_rate | pct }}</td><td class="num">{{ d.cand_rate | pct }}</td>
+  <td class="num">{{ d.delta | fmt }}</td><td class="num">{{ d.lo | fmt }}…{{ d.hi | fmt }}</td><td class="num">{{ d.p_mcnemar | fmt }}</td>
+  <td>{{ d.fixed | join(", ") }}</td><td><strong>{{ d.broken | join(", ") }}</strong></td><td>{{ d.regressed | fmt }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<p class="muted">No baseline run (mark one with <code>evalctl baseline set &lt;run_id&gt;</code>).</p>{% endif %}
+
+<h2>Results by slice</h2>
+{% for by, rows in r.slices.items() %}{% if rows %}
+<h3>by {{ by }}</h3>
+<table class="sortable"><thead><tr><th>{{ by }}</th><th>n</th><th>pass rate</th><th>95% CI</th><th></th></tr></thead><tbody>
+{% for s in rows %}<tr><td>{{ s.slice }}</td><td class="num">{{ s.n }}</td><td class="num">{{ s.pass_rate | pct }}</td><td class="num">{{ s.lo | pct }}–{{ s.hi | pct }}</td><td>{{ s.pass_rate | bar(s.lo, s.hi) | safe }}</td></tr>{% endfor %}
+</tbody></table>
+{% endif %}{% endfor %}
+
+<h2>Failing and flaky cases</h2>
+{% if r.failing %}
+<input class="filter" data-table="failing" placeholder="filter cases…">
+<table class="sortable" id="failing">
+  <thead><tr><th>case</th><th>pass rate over repeats</th><th>must-pass</th><th>failed checks</th><th>details</th><th>trace</th></tr></thead>
+  <tbody>
+  {% for f in r.failing %}
+  <tr><td><code>{{ f.case_id }}</code>{% if f.case_id in r.flaky %} <span class="badge s-WARN">flaky</span>{% endif %}</td>
+  <td class="num">{{ f.pass_rate | pct }}</td><td>{{ f.must_pass | fmt }}</td><td>{{ f.failed | join(", ") }}</td>
+  <td><ul class="reasons">{% for x in f.reasons %}<li>{{ x }}</li>{% endfor %}</ul></td>
+  <td>{% if f.trace_id and r.trace_url_template %}{{ r.trace_url_template | replace("{trace_id}", f.trace_id) }}{% else %}{{ f.trace_id | fmt }}{% endif %}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<p>No failing cases.</p>{% endif %}
+
+<h2>Suite panels</h2>
+{% for p in r.panels %}{{ m.panel(p) }}{% else %}<p class="muted">No panels for this suite.</p>{% endfor %}
+
+<h2>Judge validity</h2>
+{% if r.judges %}
+<table><thead><tr><th>judge</th><th>version</th><th>model</th><th>calibrated</th><th>kappa</th><th>FAIL recall</th><th>note</th></tr></thead><tbody>
+{% for j in r.judges %}<tr><td><code>{{ j.id }}</code></td><td>{{ j.version }}</td><td>{{ j.provider }}:{{ j.model }}</td><td>{{ m.status("PASS" if j.calibrated else "WARN") }}</td><td class="num">{{ j.kappa | fmt }}</td><td class="num">{{ j.fail_recall | fmt }}</td><td>{{ j.reason }}</td></tr>{% endfor %}
+</tbody></table>
+{% else %}<p class="muted">No judges were used in this run.</p>{% endif %}
+
+<h2>Not tested</h2>
+{% if r.not_tested %}<ul>{% for n in r.not_tested %}<li><code>{{ n.metric }}</code>: {{ n.reason }}</li>{% endfor %}</ul>{% else %}<p>Every selected metric was computed.</p>{% endif %}
+{% endblock %}

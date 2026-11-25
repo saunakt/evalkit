@@ -1,0 +1,112 @@
+[build-system]
+requires = ["hatchling==1.29.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "evalkit"
+version = "0.1.0"
+description = "Lightweight, config-driven evaluation framework for GenAI and agent systems"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "pydantic==2.14.4",
+    "pyyaml==6.0.4",
+    "typer==0.29.2",
+    "rich==14.3.4",  # deepeval 4.3.5 requires rich<15
+    "jinja2==3.1.6",
+    "httpx==0.28.1",
+    "jsonschema==4.26.0",
+    "numpy==2.4.6",  # presidio-analyzer 2.2.366 requires numpy<2.5
+    "scipy==1.17.1",  # newest scipy that still supports Python 3.11
+    "scikit-learn==1.9.1",
+    "freezegun==1.5.5",
+    "pytest==9.2.0",
+]
+
+[project.optional-dependencies]
+anthropic = ["anthropic==2.14.0"]
+deepeval = ["deepeval==4.3.5"]
+ragas = ["ragas==0.4.4"]
+textmetrics = [
+    "sacrebleu==2.6.0",
+    "rouge-score==0.1.2",
+    "nltk==3.10.4",
+    "bert-score==0.3.13",
+    "sentence-transformers==6.3.0",
+    "textstat==0.7.13",
+]
+rai = ["presidio-analyzer==2.2.366", "detoxify==0.5.4"]
+security = ["garak==0.17.1"]
+multilingual = ["langdetect==1.0.9"]
+voice = ["jiwer==4.0.0"]
+perf = ["locust==2.47.0"]
+coding = [
+    "inspect-ai==0.3.292",
+    "ruff==0.17.6",
+    "bandit==1.9.4",
+    "mutmut==3.7.0",  # 3.8 needs click>=8.4.2; deepeval 4.3.5 needs click<8.4
+    "pytest-cov==7.1.0",
+]
+agent = ["mcp==2.3.0"]
+ui = ["playwright==1.65.2"]
+observe = ["langfuse==5.2.0"]
+all = [
+    # `security` (garak) is excluded: garak 0.17.1 pins anthropic<1.0 (see docs/DECISIONS.md)
+    "evalkit[anthropic,deepeval,ragas,textmetrics,rai,multilingual,voice,perf,coding,agent,ui,observe]",
+]
+dev = [
+    "ruff==0.17.6",
+    "mypy==2.4.1",
+    "pytest-xdist==3.8.0",
+    "types-PyYAML==6.0.12.20261122",
+    "types-jsonschema==4.26.0.20261006",
+]
+
+[project.scripts]
+evalctl = "evalkit.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["evalkit", "examples"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = [".venv", "results", "reports", "datasets/coding_tasks", "*.md"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+ignore = ["RUF001", "RUF002", "RUF003", "RUF005", "B008"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["B011", "E743", "E501"]
+"datasets/**" = ["E501"]
+
+[tool.mypy]
+strict = true
+python_version = "3.11"
+plugins = ["pydantic.mypy"]
+warn_unused_ignores = false
+
+[[tool.mypy.overrides]]
+module = [
+    "sklearn.*", "scipy.*", "freezegun.*", "anthropic.*", "deepeval.*", "ragas.*",
+    "sacrebleu.*", "rouge_score.*", "nltk.*", "bert_score.*", "sentence_transformers.*",
+    "textstat.*", "presidio_analyzer.*", "detoxify.*", "garak.*", "langdetect.*", "jiwer.*",
+    "locust.*", "inspect_ai.*", "mcp.*", "playwright.*", "langfuse.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-p no:cacheprovider"
+markers = ["slow: slower integration tests"]
+
+[tool.uv]
+required-version = ">=0.13"
+# garak 0.17.1 pins anthropic<1.0, so the `security` extra cannot share an environment with
+# `anthropic` (or `all`, which includes it). See docs/DECISIONS.md.
+conflicts = [
+    [{ extra = "security" }, { extra = "anthropic" }],
+    [{ extra = "security" }, { extra = "all" }],
+]

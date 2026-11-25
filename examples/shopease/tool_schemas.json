@@ -1,0 +1,42 @@
+{
+  "search_policy": {
+    "type": "object",
+    "required": [
+      "query"
+    ],
+    "properties": {
+      "query": {
+        "type": "string"
+      },
+      "k": {
+        "type": "integer"
+      }
+    }
+  },
+  "get_order": {
+    "type": "object",
+    "required": [
+      "order_id"
+    ],
+    "properties": {
+      "order_id": {
+        "type": "string",
+        "pattern": "^ORD-\\d{6}$"
+      }
+    }
+  },
+  "cancel_order": {
+    "type": "object",
+    "required": [
+      "order_id"
+    ],
+    "properties": {
+      "order_id": {
+        "type": "string"
+      },
+      "reason": {
+        "type": "string"
+      }
+    }
+  }
+}

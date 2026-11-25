@@ -1,0 +1,8 @@
+{
+  "name": "evalkit-redteam",
+  "private": true,
+  "description": "Optional: Promptfoo red-team generation for the evalkit security suite",
+  "devDependencies": {
+    "promptfoo": "0.126.0"
+  }
+}

@@ -1,0 +1,2 @@
+{"id": "mm-voice-cancel", "media": "media/sample.wav", "tags": ["voice", "accent:en-IN"], "input": "(voice message)", "expected_transcript": "please cancel order ORD-100001", "entities": ["ORD-100001"]}
+{"id": "mm-receipt", "media": "media/receipt.png", "tags": ["image", "document"], "input": "Read this receipt and return order_id and amount as JSON.", "expected_fields": {"order_id": "ORD-100004", "amount": 12500}}

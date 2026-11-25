@@ -1,0 +1,6 @@
+# Offline coding agent: applies a known patch for each demo task (examples/fake_coding_agent.py).
+name: fake-coding-agent
+type: cli
+command: "{python} {root}/examples/fake_coding_agent.py {prompt_file}"
+parse: json
+timeout_s: 120

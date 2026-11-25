@@ -1,0 +1,37 @@
+# Fake provider script (offline demo + tests). SUT behaviour lives in examples/shopease/llm.py
+# (FakeLLM); this file scripts the judge, simulator and perturb roles.
+default_judge: PASS
+rules:
+  # simulated users (conversation + agent suites); the simulator sees the transcript text
+  - {role: simulator, match: "(?s)hidden goal.*ORD-100001.*has been cancelled", response: "<DONE>"}
+  - {role: simulator, match: "(?s)hidden goal.*cancelled", response: "Hi, please cancel my order ORD-100001, it is still processing."}
+  - {role: simulator, match: "(?s)hidden goal.*return shoes.*30-day", response: "<DONE>"}
+  - {role: simulator, match: "(?s)hidden goal.*return shoes", response: "Hello! How many days after delivery can I return shoes?"}
+  # LLM perturbations (perturb role)
+  - {role: perturb, match: "Paraphrase", response: "Could you tell me whether my order can still be cancelled?"}
+  - {role: perturb, match: "Hinglish", response: "Mera order cancel ho sakta hai kya?"}
+judge_script:
+  - {case: pc-01, judge: policy_compliance, verdict: PASS}
+  - {case: pc-02, judge: policy_compliance, verdict: FAIL}
+  - {case: pc-03, judge: policy_compliance, verdict: PASS}
+  - {case: pc-04, judge: policy_compliance, verdict: PASS}
+  - {case: pc-05, judge: policy_compliance, verdict: FAIL}
+  - {case: pc-06, judge: policy_compliance, verdict: PASS}
+  - {case: pc-07, judge: policy_compliance, verdict: PASS}
+  - {case: pc-08, judge: policy_compliance, verdict: PASS}
+  - {case: pc-09, judge: policy_compliance, verdict: PASS}
+  - {case: pc-10, judge: policy_compliance, verdict: PASS}
+  - {case: pc-11, judge: policy_compliance, verdict: FAIL}
+  - {case: pc-12, judge: policy_compliance, verdict: PASS}
+  - {case: pc-13, judge: policy_compliance, verdict: PASS}
+  - {case: pc-14, judge: policy_compliance, verdict: PASS}
+  - {case: pc-15, judge: policy_compliance, verdict: FAIL}
+  - {case: pc-16, judge: policy_compliance, verdict: PASS}
+  - {case: pc-17, judge: policy_compliance, verdict: FAIL}
+  - {case: pc-18, judge: policy_compliance, verdict: PASS}
+  - {case: pc-19, judge: policy_compliance, verdict: FAIL}
+  - {case: pc-20, judge: policy_compliance, verdict: FAIL}
+  - {case: pc-21, judge: policy_compliance, verdict: FAIL}
+  - {case: pc-22, judge: policy_compliance, verdict: PASS}
+  - {case: pc-23, judge: policy_compliance, verdict: PASS}
+  - {case: pc-24, judge: policy_compliance, verdict: PASS}

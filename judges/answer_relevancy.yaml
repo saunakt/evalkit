@@ -1,0 +1,9 @@
+id: answer_relevancy
+version: 1
+style: binary
+criterion: >
+  PASS if the answer directly addresses the user's question (a correct refusal or a
+  request for missing details also counts). FAIL if it answers a different question or
+  is mostly off-topic.
+role: judge
+temperature: 0

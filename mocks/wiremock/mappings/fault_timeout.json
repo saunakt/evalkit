@@ -1,0 +1,14 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "GET",
+    "url": "/orders/ORD-900001"
+  },
+  "response": {
+    "status": 200,
+    "fixedDelayMilliseconds": 30000,
+    "jsonBody": {
+      "status": "processing"
+    }
+  }
+}

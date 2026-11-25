@@ -1,0 +1,13 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "POST",
+    "url": "/orders/ORD-100002/cancel"
+  },
+  "response": {
+    "status": 409,
+    "jsonBody": {
+      "error": "order is delivered and cannot be cancelled"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+# Same agent, but its LLM calls go through evalkit's `sut` role (local model by default).
+name: shopease-real
+type: python
+entry: examples.shopease.bot:ask
+reset: examples.shopease.bot:reset
+state: examples.shopease.bot:state
+ingest: examples.shopease.bot:ingest
+update_doc: examples.shopease.bot:update_doc
+stream: examples.shopease.bot:stream
+thread_safe: true
+uses_roles: [sut]

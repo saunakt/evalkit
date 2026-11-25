@@ -1,0 +1,11 @@
+name: rag
+path: datasets/golden/rag.jsonl
+owner: Support Engineering
+purpose: Retrieval, ingestion, freshness and access control
+source: Hand-written demo cases for the ShopEase support agent (no real customer data).
+size: 10
+languages: [en]
+splits: [dev, heldout]
+known_gaps: Small demo set; extend with production traces via `evalctl pull-traces`.
+pii: none (synthetic order ids and names only)
+licence: same as the repository

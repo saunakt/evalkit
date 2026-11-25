@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}evalkit summary · {{ r.run_id }}{% endblock %}
+{% block body %}
+<h1>Evaluation summary {{ m.status(r.verdict) }}</h1>
+<p class="meta">Run <code>{{ r.run_id }}</code> · profile {{ r.info.profile | fmt }} · target {{ r.info.target }} · git {{ (r.info.git_commit or "n/a")[:7] }}{% if r.info.git_dirty %} (dirty){% endif %}{% if r.baseline %} · baseline <code>{{ r.baseline }}</code> (<a href="compare.html">compare</a>){% endif %}</p>
+
+<h2>Gate</h2>
+<div class="verdict">
+  <strong>{{ "Gate passed" if r.passed else "Gate FAILED" }}</strong>
+  <ul class="reasons">
+  {% for s in r.suites %}{% for f in s.failures %}<li class="fail"><strong>{{ s.suite }}</strong>: {{ f }}</li>{% endfor %}{% endfor %}
+  {% for f in r.must_pass_failures %}<li class="fail">must-pass {{ f.suite }}/{{ f.case_id }} failed {{ f.metric }} (repeat {{ f.repeat }})</li>{% endfor %}
+  </ul>
+</div>
+
+<h2>Suites</h2>
+<table class="sortable">
+  <thead><tr><th>suite</th><th>status</th><th>cases</th><th>pass rate (95% CI)</th><th></th><th>key metrics</th><th>cost (USD)</th><th>report</th></tr></thead>
+  <tbody>
+  {% for s in r.suites %}
+  <tr>
+    <td><strong>{{ s.suite }}</strong></td><td>{{ m.status(s.status) }}</td><td class="num">{{ s.n }}</td>
+    <td class="num">{{ s.overall.pass_rate | pct }} ({{ s.overall.lo | pct }}–{{ s.overall.hi | pct }})</td>
+    <td>{{ s.overall.pass_rate | bar(s.overall.lo, s.overall.hi) | safe }}</td>
+    <td>{% for k in s.key_metrics %}<code>{{ k.metric }}</code> {{ k.value | fmt }} {{ m.status(k.status) }}<br>{% endfor %}</td>
+    <td class="num">{{ s.cost_usd | fmt(4) }}</td>
+    <td><a href="{{ s.suite }}/report.html">{{ s.suite }}/report.html</a></td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<h2>Go / no-go checklist</h2>
+<table><tbody>
+{% for c in r.checklist %}<tr><td style="width:2em">{{ c.state }}</td><td>{{ c.item }}</td></tr>{% endfor %}
+</tbody></table>
+<p class="muted">✓ covered and passing · ✗ covered and failing · – not covered by this run</p>
+
+<h2>Model calls and cost by role</h2>
+<table><thead><tr><th>role</th><th>calls</th><th>paid</th><th>free</th><th>cached</th><th>tokens in</th><th>tokens out</th><th>paid cost (USD)</th></tr></thead><tbody>
+{% for role, l in r.ledger.items() %}<tr><td>{{ role }}</td><td class="num">{{ l.calls }}</td><td class="num">{{ l.paid_calls }}</td><td class="num">{{ l.free_calls }}</td><td class="num">{{ l.cached_calls }}</td><td class="num">{{ l.tokens_in }}</td><td class="num">{{ l.tokens_out }}</td><td class="num">{{ l.paid_cost_usd | fmt(4) }}</td></tr>
+{% else %}<tr><td colspan="8" class="muted">No model calls through evalkit providers.</td></tr>{% endfor %}
+</tbody></table>
+<p class="muted">Paid total: ${{ r.info.paid_cost_usd | fmt(4) }} · total tokens {{ r.info.total_tokens }}</p>
+
+<h2>Not tested</h2>
+{% if r.not_tested %}<ul>{% for n in r.not_tested %}<li>{{ n.what }}: {{ n.reason }}</li>{% endfor %}</ul>{% else %}<p>Everything selected was tested.</p>{% endif %}
+{% endblock %}

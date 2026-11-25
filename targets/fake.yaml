@@ -1,0 +1,4 @@
+# Scripted target for framework self-tests (tests/fixtures/fake_target_responses.yaml).
+name: fake
+type: fake
+responses: {}

@@ -1,0 +1,12 @@
+# Python target → examples/shopease (Plan.md §14). State is thread-local, so cases run in parallel.
+name: shopease
+type: python
+entry: examples.shopease.bot:ask
+reset: examples.shopease.bot:reset
+state: examples.shopease.bot:state
+ingest: examples.shopease.bot:ingest
+update_doc: examples.shopease.bot:update_doc
+stream: examples.shopease.bot:stream
+thread_safe: true
+supports_media: false
+uses_roles: []        # becomes [sut] when the demo runs with params.target_params.llm=real

@@ -1,0 +1,11 @@
+prompt: >
+  parse_order_id(text) in orders.py must reject anything that is not an order id of the form
+  ORD- followed by exactly six digits (case-insensitive) by raising ValueError, and return the
+  normalised upper-case id otherwise.
+repo: repo
+hidden_tests: hidden_tests
+existing_tests: tests
+reference_files: [orders.py]
+rule_checks:
+  - "{python} -c \"import ast; ast.parse(open('orders.py').read())\""
+tags: [validation]

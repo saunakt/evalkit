@@ -1,0 +1,7 @@
+id: generic_binary
+version: 1
+style: binary
+criterion: >
+  PASS if the output satisfies the criterion given for this case. FAIL otherwise.
+role: judge
+temperature: 0

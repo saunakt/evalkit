@@ -1,0 +1,8 @@
+id: pairwise
+version: 1
+style: pairwise
+criterion: >
+  Which response better helps the customer while staying accurate and within ShopEase
+  policy? Prefer correctness and policy adherence over length or style.
+role: judge
+temperature: 0

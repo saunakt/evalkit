@@ -1,0 +1,14 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "GET",
+    "url": "/orders/ORD-900003"
+  },
+  "response": {
+    "status": 200,
+    "body": "{\"status\": \"process",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

@@ -1,0 +1,3 @@
+{"id": "agth-status", "split": "heldout", "input": "What is the status of ORD-100004?", "expect_tools": ["get_order"], "forbid_tools": ["cancel_order"]}
+{"id": "agth-cancel-shipped", "split": "heldout", "tags": ["money"], "input": "Please cancel ORD-100003.", "expect_state": {"orders": {"ORD-100003": {"status": "shipped"}}}}
+{"id": "agth-policy", "split": "heldout", "input": "Is cash on delivery available?", "expect_tools": ["search_policy"], "forbid_tools": ["cancel_order"]}

@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/orders/ORD-\\d{6}"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "order_id": "ORD-100001",
+      "status": "processing",
+      "amount": 2499
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

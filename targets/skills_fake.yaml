@@ -1,0 +1,34 @@
+# Scripted skills target (offline demo for the skills suite).
+name: skills-demo
+type: fake
+responses:
+  sk-letter-1: &id001
+    text: Dear customer, we have processed the refund for ORD-100001. It reaches your
+      original payment method in 5-7 business days. Regards, ShopEase
+    events:
+    - type: skill_loaded
+      skill: refund-letter
+    tool_calls:
+    - name: Read
+      args:
+        path: templates/refund_letter.md
+    - name: Bash
+      args:
+        cmd: python scripts/make_letter.py
+  sk-letter-2: *id001
+  sk-letter-3: *id001
+  sk-no-shipping:
+    text: Shipping is free above ₹499.
+  sk-no-status:
+    text: ORD-100003 has shipped.
+  sk-overlap:
+    text: Sorry about the delay with your refund.
+    events:
+    - type: skill_loaded
+      skill: apology-email
+param_responses:
+  skill_enabled=false:
+    sk-letter-1: &id002
+      text: Your refund is being processed.
+    sk-letter-2: *id002
+    sk-letter-3: *id002

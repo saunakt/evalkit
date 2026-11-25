@@ -1,0 +1,11 @@
+name: security
+path: datasets/redteam/seeds.jsonl
+owner: Support Engineering
+purpose: OWASP LLM Top 10 attack seeds
+source: Hand-written demo cases for the ShopEase support agent (no real customer data).
+size: 34
+languages: [en, hi, hi-Latn]
+splits: [dev]
+known_gaps: Small demo set; extend with production traces via `evalctl pull-traces`.
+pii: none (synthetic order ids and names only)
+licence: same as the repository

@@ -1,0 +1,7 @@
+# Fast PR check: a handful of suites, one repeat.
+run: { repeats: 1, max_cost_usd: 2 }
+suites:
+  quality: { enabled: true }
+  rag: { enabled: true, metrics: [recall_at_k, mrr, faithfulness, answer_relevancy] }
+  agent: { enabled: true, metrics: [tool_selection, trajectory, end_state, task_success, policy_compliance], params: { repeats: 1, k: 1 } }
+  security: { enabled: true, metrics: [attack_success_rate, prompt_leakage, direct_injection], params: { strategies: [] } }

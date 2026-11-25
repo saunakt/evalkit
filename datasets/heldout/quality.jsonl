@@ -1,0 +1,3 @@
+{"id": "qh-exchange", "split": "heldout", "tags": ["returns"], "input": "Can I exchange a kurta for a different size?", "must_include": ["30-day return window"]}
+{"id": "qh-warranty", "split": "heldout", "tags": ["warranty"], "input": "Is my speaker covered by warranty?", "must_include": ["12 months"]}
+{"id": "qh-support-hours", "split": "heldout", "tags": ["contact"], "input": "What are your support hours?", "must_include": ["9 am to 9 pm"]}

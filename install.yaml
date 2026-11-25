@@ -1,0 +1,38 @@
+# install.yaml — what `evalctl setup` installs (Plan.md §13.1).
+# evalkit.yaml says WHAT TO EVALUATE; this file says WHAT TO INSTALL so it can run.
+# Package lists live only in pyproject.toml extras; this file just switches them on or off.
+#
+#   uv run evalctl setup --dry-run     # show the plan and the exact commands, change nothing
+#   uv run evalctl setup               # install extras (one `uv sync`), handle external tools
+#   uv run evalctl setup --check       # compare what is installed with this file; exit 1 if short
+
+# Always installed; cannot be turned off. Informational copy of pyproject core dependencies.
+core: [pydantic, pyyaml, typer, rich, jinja2, httpx, jsonschema, numpy, scipy, scikit-learn,
+       freezegun, pytest]
+
+extras:
+  mode: choose        # choose: use the switches below · auto: exactly what evalkit.yaml needs · all: everything
+  # Switch values: true = install · false = never install · auto = install only if evalkit.yaml needs it
+  anthropic: auto     # Anthropic SDK, for a judge on the `anthropic` provider (small)
+  deepeval: auto      # DeepEval metrics engine (`engines: {faithfulness: deepeval}`) (medium)
+  ragas: auto         # Ragas metrics engine (pulls LangChain) (medium)
+  textmetrics: false  # BLEU/ROUGE/METEOR/BERTScore/embeddings — LARGE: pulls PyTorch + models
+  rai: auto           # Presidio PII + Detoxify toxicity — LARGE: Detoxify pulls PyTorch, Presidio spaCy
+  security: false     # garak red-team scanner — LARGE; conflicts with `anthropic` (own env)
+  multilingual: true  # langdetect for language_match (tiny)
+  voice: true         # jiwer for word error rate (tiny)
+  perf: auto          # Locust load testing (`params.engine: locust`) (medium)
+  coding: false       # inspect-ai, ruff, bandit, mutmut, pytest-cov for coding agents — LARGE
+  agent: true         # MCP SDK for mcp_contract (small)
+  ui: false           # Playwright for UI/streaming tests — LARGE once browsers are added
+  observe: auto       # Langfuse push / pull-traces (small)
+
+external:             # tools outside Python. action: install | start | check | off
+  local_model: { action: check }    # local OpenAI-compatible server (Ollama/vLLM); url defaults to providers.local
+  promptfoo: { action: off }        # Promptfoo red-team generator; install = `npm install` (needs Node.js, medium)
+  gitleaks: { action: off }         # secret scanner used by coding_agent.security_findings; check only (small)
+  docker: { action: check }         # Docker, for sandbox images and the WireMock / Label Studio services (large)
+  wiremock: { action: off }         # API stubs + fault scenarios; start = docker compose (container)
+  label_studio: { action: off }     # human labelling UI; start = docker compose (LARGE container)
+  langfuse: { action: off }         # tracing backend for push / pull-traces; check only, set url
+  playwright_browsers: { action: off }  # Chromium for UI tests; install = `playwright install chromium` (LARGE)

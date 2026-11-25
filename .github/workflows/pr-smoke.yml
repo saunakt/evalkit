@@ -1,0 +1,27 @@
+name: pr-smoke
+on: [pull_request]
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with: { enable-cache: true }
+      - run: make setup-ci PROFILE=smoke
+        env: { UV_PYTHON: "3.12" }
+      - name: Smoke eval (fake provider, or a real judge when the secret exists)
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          EVALKIT_JUDGE_MODEL: ${{ vars.EVALKIT_JUDGE_MODEL }}
+        run: |
+          if [ -n "$OPENROUTER_API_KEY" ] && [ -n "$EVALKIT_JUDGE_MODEL" ]; then
+            uv run --no-sync evalctl run --profile smoke --provider fake --role "judge=openrouter:$EVALKIT_JUDGE_MODEL"
+          else
+            uv run --no-sync evalctl run --profile smoke --provider fake --set calibration.allow_uncalibrated=true
+          fi
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: { name: smoke-reports, path: reports/ }
+      - if: always()
+        uses: mikepenz/action-junit-report@v4
+        with: { report_paths: "reports/**/junit.xml" }

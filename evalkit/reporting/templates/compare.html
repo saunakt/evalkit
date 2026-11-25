@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}compare · {{ r.run_id }} vs {{ r.baseline }}{% endblock %}
+{% block body %}
+<h1>Comparison: <code>{{ r.run_id }}</code> vs baseline <code>{{ r.baseline }}</code></h1>
+<p class="meta">Pass/fail metrics on matched case ids. A case passes a metric when every repeat passed. Δ = current − baseline with paired bootstrap 95% CI; p = exact McNemar.</p>
+{% for suite, sg in gate.suites.items() %}
+<h2>{{ suite }} {{ m.status(sg.status) }}</h2>
+{% if sg.comparison %}
+<table class="sortable">
+  <thead><tr><th>metric</th><th>n</th><th>baseline</th><th>current</th><th>Δ</th><th>95% CI</th><th>p</th><th>fixed</th><th>newly broken</th><th>regressed</th></tr></thead>
+  <tbody>
+  {% for metric, d in sg.comparison.items() %}
+  <tr><td><code>{{ metric }}</code></td><td class="num">{{ d.n }}</td><td class="num">{{ d.base_rate | pct }}</td><td class="num">{{ d.cand_rate | pct }}</td>
+  <td class="num">{{ d.delta | fmt }}</td><td class="num">{{ d.lo | fmt }}…{{ d.hi | fmt }}</td><td class="num">{{ d.p_mcnemar | fmt }}</td>
+  <td>{{ d.fixed | join(", ") }}</td><td><strong>{{ d.broken | join(", ") }}</strong></td><td>{{ d.regressed | fmt }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<p class="muted">No matched cases with the baseline for this suite.</p>{% endif %}
+{% endfor %}
+{% endblock %}

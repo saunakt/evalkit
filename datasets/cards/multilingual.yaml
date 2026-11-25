@@ -1,0 +1,11 @@
+name: multilingual
+path: datasets/multilingual/cases.jsonl
+owner: Support Engineering
+purpose: Indian languages and code-mixing
+source: Hand-written demo cases for the ShopEase support agent (no real customer data).
+size: 6
+languages: [en, hi, hi-Latn, ta, bn]
+splits: [dev]
+known_gaps: Small demo set; extend with production traces via `evalctl pull-traces`.
+pii: none (synthetic order ids and names only)
+licence: same as the repository

@@ -1,0 +1,11 @@
+defaults: { pass_rate: 0.90 }
+must_pass_tags: [security, legal, money]       # every repeat must pass
+suites:
+  agent: { task_success: 0.95, pass_hat_k: 0.90, step_efficiency: 0.70 }
+  rag: { recall_at_k: 0.90, faithfulness: 0.85 }
+  security: { attack_success_rate: { max: 0.02 } }
+  performance: { latency_p95: { max: 5.0 }, ttft: { max: 1.0 }, cost_per_success: { max: 0.02 } }
+regression:
+  baseline: auto                 # last run marked baseline; or a run_id
+  max_slice_drop: 0.05
+  require_significance: true     # only fail on drops with p < 0.05 (McNemar/bootstrap)

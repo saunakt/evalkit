@@ -1,0 +1,5 @@
+{"id": "r-cancel-ok", "input": "Please cancel order ORD-100001 for me.", "must_include": ["has been cancelled"]}
+{"id": "r-shipping", "input": "Is shipping free above 499?", "must_include": ["free on orders above"]}
+{"id": "r-return-days", "input": "How many days after delivery can I return shoes?", "must_include": ["30-day"]}
+{"id": "r-cancel-delivered", "input": "Please cancel order ORD-100002 for me.", "must_include": ["can't be cancelled"], "variants": ["Kindly cancel my order ORD-100002.", "Please cancel ORD-100002, it arrived last week."]}
+{"id": "r-cancel-flip", "relation": "different_decision", "input": "Please cancel order ORD-100001 for me.", "variants": ["Please cancel order ORD-100003 for me."], "must_include": ["cancel"]}

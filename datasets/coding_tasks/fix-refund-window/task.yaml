@@ -1,0 +1,12 @@
+prompt: >
+  refund_window_days(delivered_on, today) in refunds.py should return True when a return is
+  still allowed: on or before day 30 after delivery. Customers on day 30 are being rejected.
+  Fix the off-by-one without changing other behaviour.
+repo: repo
+hidden_tests: hidden_tests
+existing_tests: tests
+reference_files: [refunds.py]
+rule_checks:
+  - "{python} -c \"import ast; ast.parse(open('refunds.py').read())\""
+  - "{python} -c \"import refunds; assert refunds.refund_window_days.__doc__\""
+tags: [bugfix]

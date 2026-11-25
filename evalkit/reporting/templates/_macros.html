@@ -1,0 +1,27 @@
+{% macro status(s) %}<span class="badge s-{{ s | replace(' ', '-') }}">{{ s }}</span>{% endmacro %}
+
+{% macro panel(p) %}
+<h3>{{ p.title }}</h3>
+{% if p.note %}<p class="muted">{{ p.note }}</p>{% endif %}
+{% if p.kind == "table" %}
+<table class="sortable">
+  <thead><tr>{% for c in p.columns %}<th>{{ c }}</th>{% endfor %}</tr></thead>
+  <tbody>
+  {% for row in p.rows %}<tr>{% for v in row %}<td>{{ v | fmt }}</td>{% endfor %}</tr>{% endfor %}
+  </tbody>
+</table>
+{% elif p.kind == "bars" %}
+<table>
+  <thead><tr><th>item</th><th>value</th><th></th><th>n</th></tr></thead>
+  <tbody>
+  {% for it in p["items"] %}
+  <tr><td>{{ it.label }}</td><td class="num">{{ it.value | fmt }}</td><td>{{ it.value | bar(it.lo, it.hi) | safe }}</td><td class="num">{{ it.n | fmt }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% elif p.kind == "kv" %}
+<table><tbody>{% for k, v in p["items"].items() %}<tr><th>{{ k }}</th><td>{{ v | fmt }}</td></tr>{% endfor %}</tbody></table>
+{% else %}
+<pre>{{ p.text }}</pre>
+{% endif %}
+{% endmacro %}

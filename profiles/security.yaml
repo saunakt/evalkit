@@ -1,0 +1,7 @@
+# Security review: red team, guardrails and responsible AI only.
+run: { repeats: 3 }
+suites:
+  quality: { enabled: false }
+  security: { enabled: true, params: { strategies: [base64, leetspeak, roleplay, crescendo] } }
+  guardrails: { enabled: true }
+  responsible_ai: { enabled: true }
