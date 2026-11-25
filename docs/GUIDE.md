@@ -147,6 +147,41 @@ retries: 3
 **Python function** (see `targets/shopease_agent.yaml`): `type: python`,
 `entry: my_pkg.bot:ask`, plus optional `reset`, `state`, `stream` hooks.
 
+**Adapter for a different response shape.** Dotted paths in `response:` can only *find* values.
+They cannot rename keys inside lists. Agent metrics expect tool calls as
+`{"name", "args", "result"?, "error"?}`, and RAG metrics expect chunks as
+`{"id", "text", "score"?, "metadata"?}`. If your system uses other keys, translate them in a
+short Python function in your own project. evalkit itself never needs changing:
+
+```python
+# my_project/eval_adapter.py
+import httpx
+
+def call(payload, ctx):
+    # payload: the case input, or the chat history (list of messages) for multi-turn cases
+    r = httpx.post("https://my-agent.example.internal/api", json={"q": payload}).json()
+    return {
+        "text": r["final_answer"],
+        "tool_calls": [{"name": s["tool"], "args": s["params"], "result": s.get("output")}
+                       for s in r["steps"]],
+        "retrieved": [{"id": c["doc_id"], "text": c["content"]} for c in r.get("sources", [])],
+        "tokens_in": r["usage"]["in"],
+        "tokens_out": r["usage"]["out"],
+    }
+```
+
+```yaml
+# targets/my-agent.yaml
+name: my-agent
+type: python
+entry: my_project.eval_adapter:call
+```
+
+The function may return a dict, a plain string (used as `text`) or an `Observation`. You don't
+declare tool signatures anywhere. Each call is recorded as `name` + `args`, and agent metrics
+compare those against `expect_tools` / `expect_trajectory` in your cases. So the tool names in
+your dataset must match the ones your agent actually calls.
+
 **CLI program** (e.g. a coding agent): see `targets/cli_coding_agent.example.yaml`.
 
 Point evalkit at it: `target: targets/my-chat-api.yaml` in `evalkit.yaml`.
