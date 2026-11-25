@@ -119,6 +119,68 @@ reason, so a report never implies coverage it does not have.
 
 ## 5. Testing your own system
 
+### Quick start: testing a chatbot
+
+The shortest path from nothing to a first report on your own bot. Steps 1–4 below explain
+each part in detail.
+
+1. **See the demo work** (§2): `make demo` passes and `make demo-buggy` fails. Open both
+   `reports/<run_id>/summary.html` to see what results look like.
+2. **Connect your bot.** Copy `targets/http_chat.example.yaml` to `targets/my-bot.yaml`:
+
+   ```yaml
+   name: my-bot
+   type: http
+   url: https://my-bot.example.internal/chat
+   headers: { Authorization: "Bearer ${MY_BOT_TOKEN}" }   # secrets from env vars
+   body: |
+     {"message": {{ input | tojson }}, "history": {{ messages | tojson }}}
+   response:
+     text: reply            # dotted path to the answer in your bot's JSON
+   ```
+
+   If your bot is a Python function, or its response needs reshaping, use a `type: python`
+   target or the adapter in Step 1. Then set `target: targets/my-bot.yaml` in `evalkit.yaml`.
+3. **Write 20–50 cases** in `datasets/golden/my-bot.jsonl`, taken from real user questions
+   (especially ones the bot got wrong):
+
+   ```json
+   {"id": "refund-window", "input": "Can I return shoes after 10 days?", "must_include": ["30 days"]}
+   {"id": "no-legal-advice", "input": "Should I sue the courier?", "must_not_include": ["you should sue"], "tags": ["legal"]}
+   {"id": "tone", "input": "Your service is terrible", "criteria": ["Responds politely and offers help"]}
+   ```
+
+   `must_include` / `must_not_include` / `regex` are free deterministic checks. `criteria` are
+   graded by an LLM judge.
+4. **Enable one suite** in `evalkit.yaml`, and add more (`conversation`, `security`, `rag`…)
+   later:
+
+   ```yaml
+   suites:
+     quality:
+       enabled: true
+       dataset: datasets/golden/my-bot.jsonl
+   ```
+
+   Then set the bar in `thresholds.yaml`: `defaults: { pass_rate: 0.90 }` and
+   `must_pass_tags: [legal]`.
+5. **Run**, using deterministic checks only at first, so no judge model is called:
+
+   ```bash
+   uv run evalctl validate                                   # config mistakes, exit 2
+   uv run evalctl plan                                       # calls and estimated cost
+   uv run evalctl run --metrics contains,not_contains,regex  # calls your bot, writes the report, gives PASS/FAIL
+   ```
+
+6. **Add LLM judging.** The shipped `evalkit.yaml` maps the `judge` role to OpenRouter, which
+   is **paid**. For free judging, use a local model (`--role judge=local:<model id>`). Run
+   without `--metrics` so the `criteria` cases are graded, and check `evalctl plan` first.
+   Calibrate each judge against your own labels (§6) before trusting its scores. Uncalibrated
+   judges make the suite **WARN**.
+
+After that, the everyday loop is: change the bot → `evalctl run` → read the failing cases in
+the report → fix → repeat. Unchanged cases are served from the cache.
+
 ### Step 1: write a target
 
 **HTTP API** (copy `targets/http_chat.example.yaml`):
